@@ -1,0 +1,41 @@
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.preprocessing import LabelEncoder
+import matplotlib.pyplot as plt
+
+# 1. Dados de Treinamento (agora com Salário)
+data = {
+    "NivelSatisfacao": ["Baixo", "Baixo", "Alto", "Alto", "Baixo", "Alto"],
+    "NumeroProjetos": ["Muitos", "Muitos", "Poucos", "Muitos", "Poucos", "Poucos"],
+    "Salario": ["Baixo", "Baixo", "Alto", "Alto", "Baixo", "Alto"],
+    "Saiu": ["Sim", "Sim", "Não", "Não", "Não", "Não"],
+}
+
+df = pd.DataFrame(data)
+
+# 2. Codificação
+le_sat = LabelEncoder()
+le_proj = LabelEncoder()
+le_sal = LabelEncoder()
+le_target = LabelEncoder()
+
+df["NivelSatisfacao"] = le_sat.fit_transform(df["NivelSatisfacao"])
+df["NumeroProjetos"] = le_proj.fit_transform(df["NumeroProjetos"])
+df["Salario"] = le_sal.fit_transform(df["Salario"])
+df["Saiu"] = le_target.fit_transform(df["Saiu"])
+
+X = df[["NivelSatisfacao", "NumeroProjetos", "Salario"]]
+y = df["Saiu"]
+
+# 3. Treinamento
+clf = DecisionTreeClassifier(criterion="entropy")
+clf.fit(X, y)
+
+# 4. Visualização
+plot_tree(
+    clf,
+    feature_names=X.columns,
+    class_names=["Fica", "Sai"],
+    filled=True,
+)
+plt.show()
